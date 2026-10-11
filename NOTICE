@@ -1,0 +1,30 @@
+Tessera Android
+===============
+
+Tessera Android is a modified version of Element X Android
+(https://github.com/element-hq/element-x-android).
+
+Original work:
+  Copyright (c) 2025 Element Creations Ltd.
+  Copyright 2022-2025 New Vector Ltd.
+  Licensed under AGPL-3.0-only OR LicenseRef-Element-Commercial.
+
+Modifications:
+  Copyright (c) 2026 Tessera contributors.
+  Distributed under the GNU Affero General Public License v3.0 only (AGPL-3.0-only).
+  See LICENSE for the full text.
+
+This program has been modified from the original version, as required by
+section 5(a) of the GNU AGPL v3. The list of changes and their dates is kept
+in CHANGES-TESSERA.md. The upstream copyright headers in source files are left
+unchanged. New files carry their own header.
+
+Corresponding source code for every distributed build is available at
+https://github.com/M1ller13/tessera-android (one tag per release).
+
+Trademarks: "Element" and the Element logo are trademarks of Element Creations
+Ltd. and are not licensed under the AGPL (section 7(e)). Tessera is not
+affiliated with or endorsed by Element.
+
+Third-party components keep their own licenses; the in-app licenses screen
+(features/licenses) lists them.

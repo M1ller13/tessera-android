@@ -1,0 +1,149 @@
+name: Tessera CI
+
+# Fork CI: debug APK (gplay), upstream unit tests, weekly trial merge of the latest upstream tag.
+# Debug signing only. No secrets are used.
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches: [ main ]
+  schedule:
+    # Mondays 04:00 UTC
+    - cron: '0 4 * * 1'
+
+permissions:
+  contents: read
+
+env:
+  GRADLE_OPTS: -Dorg.gradle.jvmargs="-Xmx6g -XX:MaxMetaspaceSize=768m -Dfile.encoding=UTF-8 -XX:+HeapDumpOnOutOfMemoryError" -Dkotlin.daemon.jvm.options=-Xmx2g -XX:+UseG1GC
+  CI_GRADLE_ARG_PROPERTIES: --stacktrace --no-configuration-cache
+
+concurrency:
+  group: tessera-ci-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+jobs:
+  apk:
+    name: Debug APK (gplay)
+    # The weekly schedule runs the trial-merge job instead.
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Free disk space
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be
+        with:
+          tool-cache: true
+          android: false
+          dotnet: true
+          haskell: true
+          large-packages: false
+          docker-images: true
+          swap-storage: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Configure Gradle
+        uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb # v6.3.0
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+      - name: Assemble debug APK
+        id: build
+        run: |
+          start=$(date +%s)
+          ./gradlew :app:assembleGplayDebug $CI_GRADLE_ARG_PROPERTIES
+          echo "seconds=$(( $(date +%s) - start ))" >> "$GITHUB_OUTPUT"
+      - name: Report APK size and build time
+        run: |
+          {
+            echo "### Debug APK (gplay)"
+            echo "Gradle build time: ${{ steps.build.outputs.seconds }} s"
+            echo
+            echo '```'
+            ls -l app/build/outputs/apk/gplay/debug/*.apk
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: tessera-debug-gplay
+          path: app/build/outputs/apk/gplay/debug/*-universal-debug.apk
+          if-no-files-found: error
+
+  tests:
+    name: Upstream unit tests and Konsist
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - name: Free disk space
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be
+        with:
+          tool-cache: true
+          android: false
+          dotnet: true
+          haskell: true
+          large-packages: false
+          docker-images: true
+          swap-storage: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Configure Gradle
+        uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb # v6.3.0
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+      - name: Unit tests
+        run: ./gradlew :app:testGplayDebugUnitTest testDebugUnitTest -x :tests:konsist:testDebugUnitTest $CI_GRADLE_ARG_PROPERTIES
+      - name: Konsist
+        run: ./gradlew :tests:konsist:testDebugUnitTest $CI_GRADLE_ARG_PROPERTIES
+
+  trial-merge:
+    name: Trial build of main + latest upstream tag
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Free disk space
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be
+        with:
+          tool-cache: true
+          android: false
+          dotnet: true
+          haskell: true
+          large-packages: false
+          docker-images: true
+          swap-storage: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Merge the latest upstream tag (workspace only, nothing is pushed)
+        run: |
+          tag=$(git ls-remote --tags --refs https://github.com/element-hq/element-x-android.git 'v[0-9]*.[0-9]*.[0-9]*' \
+            | awk '{print $2}' | sed 's#refs/tags/##' | sort -V | tail -1)
+          echo "Latest upstream tag: $tag"
+          echo "Latest upstream tag: \`$tag\`" >> "$GITHUB_STEP_SUMMARY"
+          git fetch --no-tags https://github.com/element-hq/element-x-android.git "refs/tags/$tag:refs/tags/$tag"
+          git config user.name "tessera-ci"
+          git config user.email "tessera-ci@users.noreply.github.com"
+          git merge --no-edit "$tag"
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Configure Gradle
+        uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb # v6.3.0
+        with:
+          cache-read-only: true
+      - name: Assemble debug APK
+        run: ./gradlew :app:assembleGplayDebug $CI_GRADLE_ARG_PROPERTIES
