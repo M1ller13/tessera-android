@@ -349,6 +349,13 @@ private fun HomeBottomBar(
     modifier: Modifier = Modifier,
     floatingActionButton: (@Composable () -> Unit)?,
 ) {
+    if (items.size <= 1) {
+        // A single destination needs no navigation bar: only the floating action button stays.
+        Box(modifier = modifier.padding(bottom = 16.dp)) {
+            floatingActionButton?.invoke()
+        }
+        return
+    }
     HorizontalFloatingToolbar(
         floatingActionButton = floatingActionButton,
         modifier = modifier
