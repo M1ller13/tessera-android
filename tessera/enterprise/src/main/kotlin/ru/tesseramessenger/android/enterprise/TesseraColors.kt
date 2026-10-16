@@ -26,6 +26,18 @@ object TesseraColors {
     val brandInk = Color(0xFF0D1B1D)
     val brandAccent = Color(0xFF0E7972)
 
+    // Avatar colors of the prototype (--avatar-1..7, the same in both themes): a solid color with the paper-colored initial.
+    // Compound has 6 decorative pairs, the weakest prototype color (#6A7A38) is left out.
+    private val avatarColors = listOf(
+        Color(0xFF1B5E63),
+        Color(0xFF3E6A9E),
+        Color(0xFF7D5A94),
+        Color(0xFFA04458),
+        Color(0xFFA65D3A),
+        Color(0xFF0E7972),
+    )
+    val avatarForeground = brandPaper
+
     // Light surfaces and text.
     private val lightBackground = Color(0xFFF0EEE9)
     private val lightSurface = Color(0xFFFBFAF7)
@@ -85,6 +97,12 @@ object TesseraColors {
         bgCriticalPrimary = lightError,
         bgCriticalSubtle = Color(0xFFF3DEDB),
         bgCriticalSubtleHovered = Color(0xFFEBCBC7),
+        bgDecorative1 = avatarColors[0],
+        bgDecorative2 = avatarColors[1],
+        bgDecorative3 = avatarColors[2],
+        bgDecorative4 = avatarColors[3],
+        bgDecorative5 = avatarColors[4],
+        bgDecorative6 = avatarColors[5],
         bgSubtlePrimary = lightSurface3,
         bgSubtleSecondary = lightSurface2,
         bgSubtleSecondaryLevel0 = lightSurface2,
@@ -142,6 +160,12 @@ object TesseraColors {
         textPrimary = brandInk,
         textSecondary = lightForegroundMuted,
         textSuccessPrimary = lightSuccess,
+        textDecorative1 = avatarForeground,
+        textDecorative2 = avatarForeground,
+        textDecorative3 = avatarForeground,
+        textDecorative4 = avatarForeground,
+        textDecorative5 = avatarForeground,
+        textDecorative6 = avatarForeground,
         textWarningPrimary = lightWarning,
     )
 
@@ -173,6 +197,12 @@ object TesseraColors {
         bgCriticalPrimary = darkError,
         bgCriticalSubtle = Color(0xFF3A1E1B),
         bgCriticalSubtleHovered = Color(0xFF4A2622),
+        bgDecorative1 = avatarColors[0],
+        bgDecorative2 = avatarColors[1],
+        bgDecorative3 = avatarColors[2],
+        bgDecorative4 = avatarColors[3],
+        bgDecorative5 = avatarColors[4],
+        bgDecorative6 = avatarColors[5],
         bgSubtlePrimary = darkSurface3,
         bgSubtleSecondary = darkSurface2,
         bgSubtleSecondaryLevel0 = darkSurface,
@@ -230,6 +260,12 @@ object TesseraColors {
         textPrimary = brandPaper,
         textSecondary = darkForegroundMuted,
         textSuccessPrimary = darkSuccess,
+        textDecorative1 = avatarForeground,
+        textDecorative2 = avatarForeground,
+        textDecorative3 = avatarForeground,
+        textDecorative4 = avatarForeground,
+        textDecorative5 = avatarForeground,
+        textDecorative6 = avatarForeground,
         textWarningPrimary = darkWarning,
     )
 

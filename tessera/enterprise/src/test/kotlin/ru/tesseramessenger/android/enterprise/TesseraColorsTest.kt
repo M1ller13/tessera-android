@@ -65,6 +65,23 @@ class TesseraColorsTest {
         assertThat(contrast(TesseraColors.dark.textCriticalPrimary, TesseraColors.dark.bgCanvasDefault)).isAtLeast(4.5)
     }
 
+    @Test
+    fun `avatar initials are readable on every avatar color`() {
+        listOf(TesseraColors.light, TesseraColors.dark).forEach { colors ->
+            listOf(
+                colors.bgDecorative1 to colors.textDecorative1,
+                colors.bgDecorative2 to colors.textDecorative2,
+                colors.bgDecorative3 to colors.textDecorative3,
+                colors.bgDecorative4 to colors.textDecorative4,
+                colors.bgDecorative5 to colors.textDecorative5,
+                colors.bgDecorative6 to colors.textDecorative6,
+            ).forEach { (background, text) ->
+                // The initial is big and bold: the large-text threshold of WCAG (3) applies, 4,2 is what the prototype has at worst.
+                assertThat(contrast(text, background)).isAtLeast(4.2)
+            }
+        }
+    }
+
     private fun contrast(a: Color, b: Color): Double {
         val l1 = a.luminance().toDouble()
         val l2 = b.luminance().toDouble()
