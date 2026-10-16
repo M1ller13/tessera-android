@@ -11,12 +11,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import dev.zacsweers.metro.Inject
 import io.element.android.features.enterprise.api.SessionEnterpriseService
+import io.element.android.features.preferences.impl.BuildConfig
 import io.element.android.features.logout.api.direct.DirectLogoutState
 import io.element.android.features.rageshake.api.RageshakeFeatureAvailability
 import io.element.android.libraries.architecture.Presenter
@@ -27,7 +26,6 @@ import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.indicator.api.IndicatorService
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.verification.SessionVerificationService
-import ru.tesseramessenger.android.features.TesseraFeatures
 
 @Inject
 class PreferencesAccountPresenter(
@@ -58,17 +56,7 @@ class PreferencesAccountPresenter(
 
         val showSecureBackupIndicator by indicatorService.showSettingChatBackupIndicator()
 
-        var canDeactivateAccount by remember {
-            mutableStateOf(false)
-        }
         val canReportBug by remember { rageshakeFeatureAvailability.isAvailable() }.collectAsState(false)
-        // Tessera: deactivation with a password is a removed feature, see TesseraFeatures.
-        val isPasswordDeactivationEnabled by remember {
-            featureFlagService.isFeatureEnabledFlow(TesseraFeatures.PasswordDeactivation)
-        }.collectAsState(false)
-        LaunchedEffect(Unit) {
-            canDeactivateAccount = matrixClient.canDeactivateAccount()
-        }
 
         val directLogoutState = directLogoutPresenter.present()
 
@@ -87,7 +75,9 @@ class PreferencesAccountPresenter(
             accountManagementUrl = accountManagementUrl,
             canReportBug = canReportBug,
             showLinkNewDevice = showLinkNewDevice,
-            canDeactivateAccount = canDeactivateAccount && isPasswordDeactivationEnabled,
+            // Tessera: deactivation with a password is a removed feature (TesseraFeatures.PasswordDeactivation);
+            // "Delete account" opens the page of the site instead (ADR-0011), so it needs only the URL
+            canDeactivateAccount = BuildConfig.URL_DELETE_ACCOUNT.isNotEmpty(),
             directLogoutState = directLogoutState,
             snackbarMessage = snackbarMessage,
         )

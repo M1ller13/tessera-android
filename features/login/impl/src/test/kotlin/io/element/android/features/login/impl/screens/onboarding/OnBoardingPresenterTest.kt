@@ -98,7 +98,7 @@ class OnBoardingPresenterTest {
             assertThat(initialState.canReportBug).isFalse()
             assertThat(initialState.isAddingAccount).isFalse()
             val finalState = awaitItem()
-            assertThat(finalState.canLoginWithQrCode).isTrue()
+            assertThat(finalState.canLoginWithQrCode).isEqualTo(OnBoardingConfig.CAN_LOGIN_WITH_QR_CODE)
         }
     }
 
@@ -225,8 +225,9 @@ class OnBoardingPresenterTest {
         presenter.test {
             skipItems(1)
             awaitItem().also {
-                assertThat(it.defaultAccountProvider).isNull()
-                assertThat(it.canLoginWithQrCode).isTrue()
+                // Tessera: the user never chooses, the first provider of the allow-list is the default one
+                assertThat(it.defaultAccountProvider).isEqualTo(anAccountProviderManaged(serverName = ACCOUNT_PROVIDER_FROM_CONFIG))
+                assertThat(it.canLoginWithQrCode).isEqualTo(OnBoardingConfig.CAN_LOGIN_WITH_QR_CODE)
                 assertThat(it.canCreateAccount).isFalse()
             }
         }
@@ -249,7 +250,7 @@ class OnBoardingPresenterTest {
             skipItems(1)
             awaitItem().also {
                 assertThat(it.defaultAccountProvider).isEqualTo(anAccountProviderManaged(serverName = ACCOUNT_PROVIDER_FROM_CONFIG))
-                assertThat(it.canLoginWithQrCode).isTrue()
+                assertThat(it.canLoginWithQrCode).isEqualTo(OnBoardingConfig.CAN_LOGIN_WITH_QR_CODE)
                 assertThat(it.canCreateAccount).isFalse()
             }
         }
@@ -274,7 +275,7 @@ class OnBoardingPresenterTest {
     }
 
     @Test
-    fun `present - the user must choose when several account providers are configured and enforced`() = runTest {
+    fun `present - several account providers are configured and enforced - the first is the default, the user does not choose`() = runTest {
         val presenter = createPresenter(
             enterpriseService = FakeEnterpriseService(
                 accountProviderAllowListResult = {
@@ -288,8 +289,8 @@ class OnBoardingPresenterTest {
         )
         presenter.test {
             awaitItem().also {
-                assertThat(it.defaultAccountProvider).isNull()
-                assertThat(it.mustChooseAccountProvider).isTrue()
+                assertThat(it.defaultAccountProvider).isEqualTo(anAccountProviderManaged(serverName = ACCOUNT_PROVIDER_FROM_CONFIG))
+                assertThat(it.mustChooseAccountProvider).isEqualTo(OnBoardingConfig.CAN_CHOOSE_ACCOUNT_PROVIDER)
             }
             skipItems(1)
         }

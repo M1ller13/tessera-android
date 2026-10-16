@@ -30,6 +30,12 @@ Every change to an upstream file gets its own commit with the `tessera:` prefix 
 | 2026-10-16 | `settings.gradle.kts` | includes `appicon:tessera` and the modules of `tessera/` | F1: the new modules |
 | 2026-10-16 | `app/build.gradle.kts` | `projects.tessera.enterprise` instead of `features.enterprise.implFoss`, `projects.appicon.tessera` instead of `appicon.element` | F1: own EnterpriseService and icon (plan, section 2.2). Test: `TesseraEnterpriseServiceTest`, CI assembles the APK |
 | 2026-10-16 | `app/src/main/res/values{,-night}/themes.xml`, `values/colors.xml` | splash icon `splash_logo`, splash background = Tessera canvas colors | F1: splash screen |
+| 2026-10-16 | `plugins/.../config/BuildTimeConfig.kt`, `app/build.gradle.kts` | F2: `METADATA_HOST_REVERSED` = `ru.tessera-messenger`; the redirect scheme is the same in debug / nightly / release (no `.debug` suffix); `SERVER_NAME`, `MAS_ISSUER`, `MAS_CLIENT_ID`, `STAND_*`, `URL_DELETE_ACCOUNT` added | the MAS client is static and has one redirect URI `ru.tessera-messenger:/` (MAS-PLAN M3). Test: `TesseraAppConfigFilesTest` |
+| 2026-10-16 | `libraries/matrix/api/**` (`build.gradle.kts`, `OAuthConfig.kt`) | F2: `STATIC_REGISTRATIONS` = issuer of our MAS → client `tessera-android`; the stand issuer only in debug builds (`staticRegistrations(isDebug)`); the thirdroom entry is gone | no dynamic registration by the client. Test: `TesseraOAuthConfigTest` |
+| 2026-10-16 | `appconfig/.../OnBoardingConfig.kt`, `features/login/impl/**` (`OnBoardingPresenter`, `OnBoardingView`, `res/values{,-ru}/tessera_strings.xml`) | F2: `CAN_CREATE_ACCOUNT` = false, new `CAN_LOGIN_WITH_QR_CODE` = false and `CAN_CHOOSE_ACCOUNT_PROVIDER` = false; with a fixed allow-list the first provider is the default (the stand in debug); one button "Войти по номеру" without the server name | one way in: the phone number. Tests: `OnBoardingPresenterTest`, `OnboardingViewTest` |
+| 2026-10-16 | `app/src/main/AndroidManifest.xml` | F2: filters of `elementx://`, `app.element.io`, `develop.`/`staging.element.io`, `mobile.element.io`, `matrix:` removed; `https://tessera-messenger.ru/app/` (autoVerify) added; `element://user\|room` stays until F3 | Tessera links only. The notification intents name `MainActivity` explicitly. Test: `TesseraAppConfigFilesTest` |
+| 2026-10-16 | `app/src/main/res/xml/network_security_config.xml` | F2: no clear text, no user certificates, no LAN / onion domains | release talks HTTPS to our server only. Test: `TesseraAppConfigFilesTest` |
+| 2026-10-16 | `features/preferences/impl/**` (`build.gradle.kts`, `PreferencesAccountPresenter`, `PreferencesRootNode`) | F2: "Delete account" is always shown and opens `URL_DELETE_ACCOUNT` in a Custom Tab; it no longer depends on `canDeactivateAccount()` and the password flag | the account is deleted on the site (ADR-0011). Tests: `PreferencesAccountPresenterTest` |
 
 ## Added files
 
@@ -40,6 +46,8 @@ Every change to an upstream file gets its own commit with the `tessera:` prefix 
 | 2026-10-16 | `tests/uitests/src/test/kotlin/ui/TesseraScreenshotTest.kt` | F1: Paparazzi screenshots of the splash, sign-in and chat list screens with the Tessera palette (Russian), recorded by the CI job `screenshots` of `.github/workflows/tessera-ci.yml` |
 | 2026-10-16 | `app/src/main/res/values{,-ru}/tessera_strings.xml`, `app/src/test/.../TesseraStringsTest.kt` | F1: overrides (en, ru) of the 5 shown strings of the generated `localazy.xml` that name Element ("Element Call", "new Element X app", notification sound names). The test fails when upstream adds a new string with "Element" |
 | 2026-10-16 | `docs/tessera/screenshots/*.png` | F1: Paparazzi screenshots of the splash, sign-in, chat list and the launcher icon (light and dark), from the CI job `screenshots` |
+| 2026-10-16 | `app/src/debug/res/xml/network_security_config.xml` | F2: clear text only to `127.0.0.1` and `localhost`, only in debug builds (the stand over `adb reverse`); it replaces the file of `main` |
+| 2026-10-16 | `tessera/enterprise/.../TesseraAccountProviders.kt`, `TesseraEnterpriseService.kt` | F2: allow-list = `tessera-messenger.ru` in release, plus the stand first in debug; `canConnectToAnyAccountProvider` = false. Tests: `TesseraEnterpriseServiceTest` |
 | 2026-10-11 | `tessera/docker/Dockerfile`, `tessera/docker/README.md` | optional local build with memory limits (never run by default) |
 | 2026-10-16 | `appicon/tessera/**` | F1: adaptive launcher icon with a monochrome layer (vector, `TesseraLogo` of the prototype), `onboarding_logo` (sign-in screen) and `splash_logo`: `TesseraAppIcon` of the prototype (brand square, mark in paper color), the same in both themes |
 | 2026-10-16 | `tessera/features/**` | F4: `TesseraFeatures` — flags of removed features (Spaces, Labs, deactivation with a password); `isFinished = true` and the default `false`, so nobody can switch them on. Test: `TesseraFeaturesTest` |
@@ -51,7 +59,9 @@ Done in F1/F4 (PR "Tessera brand and removal of unused features"): name, palette
 bug reports / UnifiedPush, Spaces, Labs, location, password deactivation and developer settings in release. Still open from F1: fonts
 (the generated `TypographyTokens` hard-code `FontFamily.Default`), a forced Russian fallback.
 
-Server allow-list and login — F2. Matrix ID hiding — F3.
+Done in F2 (branch `f2-login`): server allow-list, one "Войти по номеру" button, static MAS client, App Links, delete account, clear text in debug only.
+Open from F2: `https://tessera-messenger.ru/.well-known/assetlinks.json` (a stub in the `tessera` repository until the site is published and the release key is known);
+the production MAS issuer `https://account.tessera-messenger.ru/` and its client id are assumed to be the stand's. Matrix ID hiding — F3.
 
 ## Signing
 

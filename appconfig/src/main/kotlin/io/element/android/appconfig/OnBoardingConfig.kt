@@ -10,5 +10,11 @@ package io.element.android.appconfig
 
 object OnBoardingConfig {
     /** Whether the user can create an account using the app. */
-    const val CAN_CREATE_ACCOUNT = true
+    const val CAN_CREATE_ACCOUNT = false
+
+    /** Whether the user can sign in by scanning a QR code (Tessera: no, the only way in is the phone number). */
+    const val CAN_LOGIN_WITH_QR_CODE = false
+
+    /** Whether the user can choose the account provider (Tessera: no, the server is fixed by the allow-list). */
+    const val CAN_CHOOSE_ACCOUNT_PROVIDER = false
 }

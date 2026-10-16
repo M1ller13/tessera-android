@@ -41,6 +41,11 @@ android {
             name = "URL_PRIVACY",
             value = BuildTimeConfig.URL_PRIVACY ?: "https://element.io/privacy",
         )
+        // Tessera: "Delete account" opens the site page in a Custom Tab (ADR-0011)
+        buildConfigFieldStr(
+            name = "URL_DELETE_ACCOUNT",
+            value = BuildTimeConfig.URL_DELETE_ACCOUNT ?: "",
+        )
     }
 }
 

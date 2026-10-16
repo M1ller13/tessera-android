@@ -106,10 +106,11 @@ android {
         val oAuthRedirectSchemeBase = BuildTimeConfig.METADATA_HOST_REVERSED ?: "io.element.android"
         getByName("debug") {
             resValue("string", "app_name", "$baseAppName dbg")
+            // Tessera: the same scheme as in release, because the MAS client is static and has one redirect URI
             resValue(
                 "string",
                 "login_redirect_scheme",
-                "$oAuthRedirectSchemeBase.debug",
+                oAuthRedirectSchemeBase,
             )
             applicationIdSuffix = ".debug"
             signingConfig = signingConfigs.getByName("debug")
@@ -144,7 +145,7 @@ android {
             resValue(
                 "string",
                 "login_redirect_scheme",
-                "$oAuthRedirectSchemeBase.nightly",
+                oAuthRedirectSchemeBase,
             )
             matchingFallbacks += listOf("release")
             signingConfig = signingConfigs.getByName("nightly")

@@ -21,15 +21,19 @@ import kotlinx.coroutines.flow.flowOf
 
 /**
  * Tessera implementation of [EnterpriseService]: the brand palette, the push gateway from the build
- * config, no bug reports. The server allow-list stays permissive until F2.
+ * config, no bug reports. The user can sign in only to the servers of [TesseraAccountProviders]:
+ * the Tessera one in release, plus the dev stand in debug builds.
  */
 @ContributesBinding(AppScope::class)
 class TesseraEnterpriseService : EnterpriseService {
+    private val allowList: List<AccountProvider> = TesseraAccountProviders.allowList(isDebug = BuildConfig.DEBUG)
+
     override suspend fun isEnterpriseUser(sessionId: SessionId) = false
     override suspend fun tweakMasUrl(url: String, urlContentFetcher: ClientUrlContentFetcher) = url
-    override fun accountProviderAllowList(): List<AccountProvider> = emptyList()
-    override fun canConnectToAnyAccountProvider(): Boolean = true
-    override suspend fun isAllowedToConnectToAccountProvider(accountProvider: AccountProvider) = true
+    override fun accountProviderAllowList(): List<AccountProvider> = allowList
+    override fun canConnectToAnyAccountProvider(): Boolean = false
+    override suspend fun isAllowedToConnectToAccountProvider(accountProvider: AccountProvider) =
+        allowList.any { it.matches(accountProvider) }
 
     // Tessera is not Element Pro and never asks the homeserver about it.
     override suspend fun isElementProEnforced(serverName: String): Boolean = false

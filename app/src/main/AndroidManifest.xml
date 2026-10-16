@@ -63,14 +63,10 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-            <!-- Handle deep-link for notification ./tools/adb/deeplink.sh -->
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-                <category android:name="android.intent.category.DEFAULT" />
-                <data
-                    android:host="open"
-                    android:scheme="elementx" />
-            </intent-filter>
+            <!--
+              Tessera: the `elementx://` filter of the notification deep links is removed. The notification intents
+              (DefaultIntentProvider) name MainActivity explicitly, so they do not need it.
+            -->
             <!--
               OAuth redirection
             -->
@@ -83,7 +79,10 @@
                 <data android:scheme="@string/login_redirect_scheme" />
             </intent-filter>
             <!--
-              Element web links
+              Tessera App Links: only the `/app/` links of our site (the delete-account page and the others stay
+              in the browser). The Element hosts (app.element.io, mobile.element.io) and the `matrix:` scheme are removed.
+              TODO(F2): https://tessera-messenger.ru/.well-known/assetlinks.json is a stub in the `tessera` repository
+              until the site is published and the release signing key is known; autoVerify fails until then.
             -->
             <intent-filter android:autoVerify="true">
                 <action android:name="android.intent.action.VIEW" />
@@ -92,39 +91,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data android:scheme="https" />
-                <!-- Note: we can't use "*.element.io" here because it'll intercept the "mas.element.io" domain too. -->
-                <!-- Matching asset file: https://app.element.io/.well-known/assetlinks.json -->
-                <data android:host="app.element.io" />
-                <!-- Matching asset file: https://develop.element.io/.well-known/assetlinks.json -->
-                <data android:host="develop.element.io" />
-                <!-- Matching asset file: https://staging.element.io/.well-known/assetlinks.json -->
-                <data android:host="staging.element.io" />
-            </intent-filter>
-            <!--
-              Element mobile links
-              Example: https://mobile.element.io/element/?account_provider=example.org&login_hint=mxid:@alice:example.org
-            -->
-            <intent-filter android:autoVerify="true">
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="https" />
-                <!-- Matching asset file: https://mobile.element.io/.well-known/assetlinks.json -->
-                <data android:host="mobile.element.io" />
-                <data android:path="/element/" />
-            </intent-filter>
-            <!--
-              matrix: links
-            -->
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="matrix" />
+                <data android:host="tessera-messenger.ru" />
+                <data android:pathPrefix="/app/" />
             </intent-filter>
             <!--
               links from matrix.to website
