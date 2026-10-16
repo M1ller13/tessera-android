@@ -9,6 +9,7 @@
 
 package ru.tesseramessenger.android.enterprise
 
+import androidx.activity.ComponentActivity
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.ExperimentalTestApi
 import androidx.compose.ui.test.v2.runAndroidComposeUiTest
@@ -23,7 +24,7 @@ import org.junit.Test
 
 class TesseraThemeTest : RobolectricTest() {
     @Test
-    fun `ElementTheme without colors uses the Compound palette by default`() = runAndroidComposeUiTest {
+    fun `ElementTheme without colors uses the Compound palette by default`() = runAndroidComposeUiTest<ComponentActivity> {
         var colors: SemanticColors? = null
         setContent {
             ElementTheme(theme = Theme.Light, applySystemBarsUpdate = false) {
@@ -34,7 +35,7 @@ class TesseraThemeTest : RobolectricTest() {
     }
 
     @Test
-    fun `ElementTheme without colors uses the palette from LocalDefaultSemanticColors`() = runAndroidComposeUiTest {
+    fun `ElementTheme without colors uses the palette from LocalDefaultSemanticColors`() = runAndroidComposeUiTest<ComponentActivity> {
         val seen = mutableMapOf<Theme, SemanticColors>()
         setContent {
             CompositionLocalProvider(LocalDefaultSemanticColors provides TesseraColors.lightDark) {
@@ -51,7 +52,7 @@ class TesseraThemeTest : RobolectricTest() {
     }
 
     @Test
-    fun `colors passed to ElementTheme win over LocalDefaultSemanticColors`() = runAndroidComposeUiTest {
+    fun `colors passed to ElementTheme win over LocalDefaultSemanticColors`() = runAndroidComposeUiTest<ComponentActivity> {
         var colors: SemanticColors? = null
         setContent {
             CompositionLocalProvider(LocalDefaultSemanticColors provides TesseraColors.lightDark) {
