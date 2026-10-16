@@ -39,6 +39,7 @@ import kotlinx.collections.immutable.toImmutableList
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import ru.tesseramessenger.android.features.TesseraFeatures
 
 @Inject
 class PreferencesRootPresenter(
@@ -118,7 +119,10 @@ class PreferencesRootPresenter(
         val snackbarMessage by snackbarDispatcher.collectSnackbarMessageAsState()
         val hasAnalyticsProviders = remember { analyticsService.getAvailableAnalyticsProviders().isNotEmpty() }
 
-        val showLabsItem = remember { featureFlagService.getAvailableFeatures(isInLabs = true).isNotEmpty() }
+        // Tessera: the Labs screen is a removed feature, see TesseraFeatures.
+        val isLabsEnabled by remember { featureFlagService.isFeatureEnabledFlow(TesseraFeatures.Labs) }.collectAsState(false)
+        val hasLabsFeatures = remember { featureFlagService.getAvailableFeatures(isInLabs = true).isNotEmpty() }
+        val showLabsItem = isLabsEnabled && hasLabsFeatures
 
         val showDeveloperSettings by showDeveloperSettingsProvider.showDeveloperSettings.collectAsState()
 

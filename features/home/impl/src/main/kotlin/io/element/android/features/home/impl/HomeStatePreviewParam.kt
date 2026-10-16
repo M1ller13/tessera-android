@@ -43,6 +43,15 @@ open class HomeStatePreviewParam : PreviewParameterProvider<HomeState> {
             aHomeState(
                 currentHomeNavigationBarItem = HomeNavigationBarItem.Spaces,
             ),
+            // Tessera: Spaces are removed, the bar has no Spaces tab. Keep this entry at index 5: TesseraScreenshotTest picks it.
+            aHomeState(
+                isSpacesEnabled = false,
+                roomListState = aRoomListState(
+                    contentState = aRoomsContentState(
+                        summaries = generateRoomListRoomSummaryList(),
+                    )
+                ),
+            ),
         ) + RoomListStatePreviewParam().values.map {
             aHomeState(roomListState = it)
         } + aHomeState(
@@ -62,6 +71,7 @@ internal fun aHomeState(
     currentHomeNavigationBarItem: HomeNavigationBarItem = HomeNavigationBarItem.Chats,
     roomListState: RoomListState = aRoomListState(),
     homeSpacesState: HomeSpacesState = aHomeSpacesState(),
+    isSpacesEnabled: Boolean = true,
     canReportBug: Boolean = true,
     directLogoutState: DirectLogoutState = aDirectLogoutState(),
     eventSink: (HomeEvent) -> Unit = {}
@@ -75,5 +85,6 @@ internal fun aHomeState(
     currentHomeNavigationBarItem = currentHomeNavigationBarItem,
     roomListState = roomListState,
     homeSpacesState = homeSpacesState,
+    isSpacesEnabled = isSpacesEnabled,
     eventSink = eventSink,
 )

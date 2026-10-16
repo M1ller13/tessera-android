@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Logo of the sign-in screen: TesseraAppIcon of the prototype (brand square with the 22% rounded corners, the mark in paper color),
+  the same in the light and the dark theme. The name `onboarding_logo` is looked up by DefaultOnBoardingLogoResIdProvider;
+  when it exists, the Element logo is not drawn.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="112dp"
+    android:height="112dp"
+    android:viewportWidth="112"
+    android:viewportHeight="112">
+    <path
+        android:fillColor="#1B5E63"
+        android:pathData="M24.64,0H87.36a24.64,24.64 0 0 1 24.64,24.64V87.36a24.64,24.64 0 0 1 -24.64,24.64H24.64a24.64,24.64 0 0 1 -24.64,-24.64V24.64a24.64,24.64 0 0 1 24.64,-24.64Z" />
+    <group
+        android:scaleX="1.085"
+        android:scaleY="1.085"
+        android:translateX="21.3"
+        android:translateY="21.3">
+        <path
+            android:fillColor="#F0EEE9"
+            android:pathData="M2,3L34,3L34,25L28,25L28,61L18,61L18,21L2,21Z" />
+        <path
+            android:fillColor="#F0EEE9"
+            android:pathData="M39,3L62,3L62,21L46,21L46,61L33,61L33,25L39,25Z" />
+    </group>
+</vector>

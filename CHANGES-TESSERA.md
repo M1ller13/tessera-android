@@ -15,6 +15,21 @@ Every change to an upstream file gets its own commit with the `tessera:` prefix 
 |---|---|---|---|
 | 2026-10-11 | `plugins/src/main/kotlin/config/BuildTimeConfig.kt` | `APPLICATION_ID` = `ru.tesseramessenger.android` | own application id (ADR-0020); the Gradle `namespace` stays `io.element.android.x` |
 | 2026-10-16 | `README.md` | note about the fork and `GIT_LFS_SKIP_SMUDGE=1` at the top | AGPL notice; LFS screenshots are not needed to build |
+| 2026-10-16 | `plugins/src/main/kotlin/config/BuildTimeConfig.kt` | name `Tessera`, `URL_*` → `tessera-messenger.ru` (placeholders), `URL_SUPPORT`, `PUSH_GATEWAY_URL` added, `PUSH_CONFIG_INCLUDE_UNIFIED_PUSH` = false | F1: brand, links, push gateway stub, no UnifiedPush. Test: `TesseraBuildConfigTest` |
+| 2026-10-16 | `plugins/src/main/kotlin/ModulesConfig.kt` | the analytics config is driven by the keys for every build, not only for `isEnterpriseBuild` | F1: keys are empty, so Posthog and Sentry are not compiled in (`services:analytics:noop`) |
+| 2026-10-16 | `appconfig/build.gradle.kts` | `URL_POLICY`, `BUG_REPORT_URL`, `BUG_REPORT_APP_NAME` come from `BuildTimeConfig` in all builds | F1: no fallback to the Element rageshake server. Test: `TesseraBuildConfigTest` |
+| 2026-10-16 | `appconfig/.../ApplicationConfig.kt` | `PRODUCTION_APPLICATION_NAME`, `DESKTOP_APPLICATION_NAME` = `Tessera` | F1: the name in strings. Test: `TesseraBuildConfigTest` |
+| 2026-10-16 | `tests/konsist/.../KonsistLicenseTest.kt` | files of the modules `tessera/*` and `appicon/tessera` are exempt from the Element header check | our files carry the Tessera AGPL header; the tests stay green |
+| 2026-10-16 | `tests/konsist/.../KonsistClassNameTest.kt` | `Tessera` added to the allowed prefixes of `@ContributesBinding` classes | `TesseraEnterpriseService` and the other bindings of `tessera/enterprise` |
+| 2026-10-16 | `features/home/impl/**` (`build.gradle.kts`, `HomePresenter`, `HomeState`, `HomeStatePreviewParam`, `HomeView`) | F4: the Spaces tab is hidden by `TesseraFeatures.Spaces`; `HomeState.isSpacesEnabled`, `navigationBarItems`; the presenter falls back to the chats. Tests: `HomePresenterTest` (the flag off by default, the flag on), preview `aHomeState(isSpacesEnabled = false)` |
+| 2026-10-16 | `features/home/impl/.../HomeView.kt` | `HomeBottomBar` shows only the floating action button when there is a single destination | F1: with Spaces hidden the one-tab toolbar covered the chat list |
+| 2026-10-16 | `features/preferences/impl/**` (`build.gradle.kts`, `PreferencesRootPresenter`, `PreferencesAccountPresenter`, `ShowDeveloperSettingsProvider`) | F4: Labs hidden by `TesseraFeatures.Labs`; deactivation with a password hidden by `TesseraFeatures.PasswordDeactivation`; the 7-tap unlock of the developer settings is a no-op in release builds. Tests: `PreferencesRootPresenterTest`, `PreferencesAccountPresenterTest`, `ShowDeveloperSettingsProviderTest` |
+| 2026-10-16 | `features/location/api/build.gradle.kts` | `MAPTILER_API_KEY` only from `BuildTimeConfig` (empty), not from the environment or `local.properties` | F4: location sharing is off in every build (`LocationService.isServiceAvailable()` is false). Test: `TesseraLocationRemovedTest` |
+| 2026-10-16 | `libraries/compound/.../theme/ElementTheme.kt` | new `LocalDefaultSemanticColors`; the default `compoundLight`/`compoundDark` of `ElementTheme` come from it (Compound palette unless provided) | F1: previews and screenshot tests, which call `ElementTheme` without colors, can show the Tessera palette. The generated Compound files are not touched. Test: `TesseraThemeTest` |
+| 2026-10-16 | `tests/uitests/build.gradle.kts`, `features/home/impl/.../HomeStatePreviewParam.kt` | `appicon.tessera` and `tessera.enterprise` for the screenshot test; the preview entry 5 of `HomeStatePreviewParam` has many chats | F1: screenshots of the main screens (`TesseraScreenshotTest`, the CI job "Tessera screenshots") |
+| 2026-10-16 | `settings.gradle.kts` | includes `appicon:tessera` and the modules of `tessera/` | F1: the new modules |
+| 2026-10-16 | `app/build.gradle.kts` | `projects.tessera.enterprise` instead of `features.enterprise.implFoss`, `projects.appicon.tessera` instead of `appicon.element` | F1: own EnterpriseService and icon (plan, section 2.2). Test: `TesseraEnterpriseServiceTest`, CI assembles the APK |
+| 2026-10-16 | `app/src/main/res/values{,-night}/themes.xml`, `values/colors.xml` | splash icon `splash_logo`, splash background = Tessera canvas colors | F1: splash screen |
 
 ## Added files
 
@@ -22,12 +37,21 @@ Every change to an upstream file gets its own commit with the `tessera:` prefix 
 |---|---|---|
 | 2026-10-11 | `NOTICE`, `CHANGES-TESSERA.md` | AGPL-3.0 section 5(a) notices |
 | 2026-10-11 | `.github/workflows/tessera-ci.yml` | fork CI: debug APK (gplay), upstream unit tests, weekly trial merge of the latest upstream tag |
+| 2026-10-16 | `tests/uitests/src/test/kotlin/ui/TesseraScreenshotTest.kt` | F1: Paparazzi screenshots of the splash, sign-in and chat list screens with the Tessera palette (Russian), recorded by the CI job `screenshots` of `.github/workflows/tessera-ci.yml` |
+| 2026-10-16 | `app/src/main/res/values{,-ru}/tessera_strings.xml`, `app/src/test/.../TesseraStringsTest.kt` | F1: overrides (en, ru) of the 5 shown strings of the generated `localazy.xml` that name Element ("Element Call", "new Element X app", notification sound names). The test fails when upstream adds a new string with "Element" |
+| 2026-10-16 | `docs/tessera/screenshots/*.png` | F1: Paparazzi screenshots of the splash, sign-in, chat list and the launcher icon (light and dark), from the CI job `screenshots` |
 | 2026-10-11 | `tessera/docker/Dockerfile`, `tessera/docker/README.md` | optional local build with memory limits (never run by default) |
+| 2026-10-16 | `appicon/tessera/**` | F1: adaptive launcher icon with a monochrome layer (vector, `TesseraLogo` of the prototype), `onboarding_logo` (sign-in screen) and `splash_logo`: `TesseraAppIcon` of the prototype (brand square, mark in paper color), the same in both themes |
+| 2026-10-16 | `tessera/features/**` | F4: `TesseraFeatures` — flags of removed features (Spaces, Labs, deactivation with a password); `isFinished = true` and the default `false`, so nobody can switch them on. Test: `TesseraFeaturesTest` |
+| 2026-10-16 | `tessera/enterprise/**` | F1: module that replaces `features/enterprise/impl-foss`: `TesseraEnterpriseService` (palette through `semanticColorsFlow`, push gateway from `BuildTimeConfig`, bug reports off), the other `*EnterpriseService`/hook bindings, `TesseraColors`, tests |
 
 ## Not changed yet (planned)
 
-Branding, colors, fonts, links, push gateway — F1. Server allow-list and login — F2.
-Matrix ID hiding — F3. Removal of unused features — F4.
+Done in F1/F4 (PR "Tessera brand and removal of unused features"): name, palette, icon, splash and sign-in logo, links, no analytics /
+bug reports / UnifiedPush, Spaces, Labs, location, password deactivation and developer settings in release. Still open from F1: fonts
+(the generated `TypographyTokens` hard-code `FontFamily.Default`), a forced Russian fallback.
+
+Server allow-list and login — F2. Matrix ID hiding — F3.
 
 ## Signing
 

@@ -58,6 +58,7 @@ include(":appnav")
 include(":appconfig")
 include(":appicon:element")
 include(":appicon:enterprise")
+include(":appicon:tessera")
 include(":tests:detekt-rules")
 include(":tests:konsist")
 include(":tests:uitests")
@@ -81,6 +82,8 @@ fun includeProjects(directory: File, path: String, maxDepth: Int = 1) {
 }
 
 includeProjects(File(rootDir, "enterprise"), ":enterprise", maxDepth = 2)
+// Tessera: own modules of the fork (see CHANGES-TESSERA.md).
+includeProjects(File(rootDir, "tessera"), ":tessera", maxDepth = 2)
 includeProjects(File(rootDir, "features"), ":features")
 includeProjects(File(rootDir, "libraries"), ":libraries")
 includeProjects(File(rootDir, "services"), ":services")

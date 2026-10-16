@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2026 Element Creations Ltd.
+  ~ Copyright 2026 Tessera.
+  ~
+  ~ SPDX-License-Identifier: AGPL-3.0-only OR LicenseRef-Element-Commercial.
+  ~ Please see LICENSE files in the repository root for full details.
+  -->
+<!--
+  Strings of the upstream `localazy.xml` files that name Element in the interface (AGPL section 7e).
+  `localazy.xml` is generated and never edited: the app module overrides these names, see TesseraStringsTest.
+  Only `en` (this file) and `ru` are overridden.
+-->
+<resources>
+    <string name="call_invalid_audio_device_bluetooth_devices_disabled">"Calls do not support using Bluetooth audio devices in this Android version. Please select a different audio device."</string>
+    <string name="screen_incoming_call_subtitle_android">"Incoming call"</string>
+    <string name="screen_room_timeline_legacy_call">"Unsupported call. Ask if the caller can use the new Tessera app."</string>
+    <string name="screen_notification_settings_sound_element_default">"Tessera Default"</string>
+    <string name="screen_notification_settings_sound_element_fade">"Tessera Fade"</string>
+</resources>

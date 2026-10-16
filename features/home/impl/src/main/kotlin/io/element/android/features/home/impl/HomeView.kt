@@ -235,6 +235,7 @@ private fun HomeScaffold(
                 // The Scaffold uses top-only insets so the scrollable content can go edge-to-edge behind the
                 // navigation bar, so the floating toolbar has to apply the bottom inset itself to avoid overlapping it.
                 modifier = Modifier.windowInsetsPadding(WindowInsets.navigationBars),
+                items = state.navigationBarItems,
                 currentHomeNavigationBarItem = state.currentHomeNavigationBarItem,
                 onItemClick = { item ->
                     // scroll to top if selecting the same item
@@ -342,17 +343,25 @@ private fun HomeFloatingActionButton(
 @OptIn(ExperimentalMaterial3ExpressiveApi::class)
 @Composable
 private fun HomeBottomBar(
+    items: List<HomeNavigationBarItem>,
     currentHomeNavigationBarItem: HomeNavigationBarItem,
     onItemClick: (HomeNavigationBarItem) -> Unit,
     modifier: Modifier = Modifier,
     floatingActionButton: (@Composable () -> Unit)?,
 ) {
+    if (items.size <= 1) {
+        // A single destination needs no navigation bar: only the floating action button stays.
+        Box(modifier = modifier.padding(bottom = 16.dp)) {
+            floatingActionButton?.invoke()
+        }
+        return
+    }
     HorizontalFloatingToolbar(
         floatingActionButton = floatingActionButton,
         modifier = modifier
             .zIndex(1f),
     ) {
-        HomeNavigationBarItem.entries.forEachIndexed { index, item ->
+        items.forEachIndexed { index, item ->
             if (index > 0) {
                 HorizontalFloatingToolbarSeparator()
             }

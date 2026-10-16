@@ -107,9 +107,49 @@ jobs:
       - name: Fetch LFS test assets only
         run: git lfs pull --include="libraries/**/src/test/assets/**"
       - name: Unit tests
-        run: ./gradlew :app:testGplayDebugUnitTest testDebugUnitTest -x :tests:konsist:testDebugUnitTest $CI_GRADLE_ARG_PROPERTIES
+        # --continue: one failing module must not hide the failures of the others.
+        run: ./gradlew :app:testGplayDebugUnitTest testDebugUnitTest -x :tests:konsist:testDebugUnitTest --continue $CI_GRADLE_ARG_PROPERTIES
       - name: Konsist
+        if: ${{ !cancelled() }}
         run: ./gradlew :tests:konsist:testDebugUnitTest $CI_GRADLE_ARG_PROPERTIES
+
+  screenshots:
+    name: Tessera screenshots (Paparazzi)
+    # Splash, sign-in and chat list with the Tessera palette (tests/uitests, ui.TesseraScreenshotTest).
+    # The PNG files are attached to the run; the upstream reference screenshots (Git LFS) are not used.
+    if: github.event_name != 'schedule'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - name: Free disk space
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be
+        with:
+          tool-cache: true
+          android: false
+          dotnet: true
+          haskell: true
+          large-packages: false
+          docker-images: true
+          swap-storage: false
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+          lfs: false
+      - uses: actions/setup-java@de7274f081f381c8f8158605e0321c36c376e2e6 # v6.0.1
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Configure Gradle
+        uses: gradle/actions/setup-gradle@9c971963bec38e04b3d30dcc455b5382be2fdbfb # v6.3.0
+        with:
+          cache-read-only: ${{ github.ref != 'refs/heads/main' }}
+      - name: Record the Tessera screenshots
+        run: ./gradlew :tests:uitests:recordPaparazziDebug --tests 'ui.TesseraScreenshotTest' $CI_GRADLE_ARG_PROPERTIES
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: tessera-screenshots
+          path: tests/uitests/src/test/snapshots/images/*TesseraScreenshotTest*.png
+          if-no-files-found: error
 
   trial-merge:
     name: Trial build of main + latest upstream tag
