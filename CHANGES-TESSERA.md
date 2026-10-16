@@ -30,6 +30,8 @@ Every change to an upstream file gets its own commit with the `tessera:` prefix 
 | 2026-10-11 | `NOTICE`, `CHANGES-TESSERA.md` | AGPL-3.0 section 5(a) notices |
 | 2026-10-11 | `.github/workflows/tessera-ci.yml` | fork CI: debug APK (gplay), upstream unit tests, weekly trial merge of the latest upstream tag |
 | 2026-10-11 | `tessera/docker/Dockerfile`, `tessera/docker/README.md` | optional local build with memory limits (never run by default) |
+| 2026-10-16 | `appicon/tessera/**` | F1: adaptive launcher icon with a monochrome layer (vector, `TesseraLogo` of the prototype), `onboarding_logo` (sign-in screen, light and dark), `splash_logo` |
+| 2026-10-16 | `tessera/enterprise/**` | F1: module that replaces `features/enterprise/impl-foss`: `TesseraEnterpriseService` (palette through `semanticColorsFlow`, push gateway from `BuildTimeConfig`, bug reports off), the other `*EnterpriseService`/hook bindings, `TesseraColors`, tests |
 
 ## Not changed yet (planned)
 

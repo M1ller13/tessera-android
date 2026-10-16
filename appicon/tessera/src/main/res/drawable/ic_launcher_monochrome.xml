@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Themed (monochrome) icon: only the alpha of the mark is used by the launcher. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:scaleX="0.75"
+        android:scaleY="0.75"
+        android:translateX="30"
+        android:translateY="30">
+        <path
+            android:fillColor="#FF000000"
+            android:pathData="M2,3L34,3L34,25L28,25L28,61L18,61L18,21L2,21Z" />
+        <path
+            android:fillColor="#FF000000"
+            android:pathData="M39,3L62,3L62,21L46,21L46,61L33,61L33,25L39,25Z" />
+    </group>
+</vector>

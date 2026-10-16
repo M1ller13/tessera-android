@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Dark theme: #1B5E63 is unreadable on #0D1B1D, so the light brand tint (primary-text of the prototype). -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="64"
+    android:viewportHeight="64">
+    <path
+        android:fillColor="#7CC3BC"
+        android:pathData="M2,3L34,3L34,25L28,25L28,61L18,61L18,21L2,21Z" />
+    <path
+        android:fillColor="#7CC3BC"
+        android:pathData="M39,3L62,3L62,21L46,21L46,61L33,61L33,25L39,25Z" />
+</vector>
