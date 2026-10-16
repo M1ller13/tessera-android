@@ -271,8 +271,9 @@ dependencies {
         allEnterpriseImpl(project)
         implementation(projects.appicon.enterprise)
     } else {
-        implementation(projects.features.enterprise.implFoss)
-        implementation(projects.appicon.element)
+        // Tessera: own EnterpriseService and own icon instead of impl-foss and the Element icon.
+        implementation(projects.tessera.enterprise)
+        implementation(projects.appicon.tessera)
     }
     allFeaturesImpl(project)
     implementation(projects.features.migration.api)

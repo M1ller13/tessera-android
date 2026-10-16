@@ -19,9 +19,11 @@ Every change to an upstream file gets its own commit with the `tessera:` prefix 
 | 2026-10-16 | `plugins/src/main/kotlin/ModulesConfig.kt` | the analytics config is driven by the keys for every build, not only for `isEnterpriseBuild` | F1: keys are empty, so Posthog and Sentry are not compiled in (`services:analytics:noop`) |
 | 2026-10-16 | `appconfig/build.gradle.kts` | `URL_POLICY`, `BUG_REPORT_URL`, `BUG_REPORT_APP_NAME` come from `BuildTimeConfig` in all builds | F1: no fallback to the Element rageshake server. Test: `TesseraBuildConfigTest` |
 | 2026-10-16 | `appconfig/.../ApplicationConfig.kt` | `PRODUCTION_APPLICATION_NAME`, `DESKTOP_APPLICATION_NAME` = `Tessera` | F1: the name in strings. Test: `TesseraBuildConfigTest` |
-
 | 2026-10-16 | `tests/konsist/.../KonsistLicenseTest.kt` | files of the modules `tessera/*` and `appicon/tessera` are exempt from the Element header check | our files carry the Tessera AGPL header; the tests stay green |
 | 2026-10-16 | `tests/konsist/.../KonsistClassNameTest.kt` | `Tessera` added to the allowed prefixes of `@ContributesBinding` classes | `TesseraEnterpriseService` and the other bindings of `tessera/enterprise` |
+| 2026-10-16 | `settings.gradle.kts` | includes `appicon:tessera` and the modules of `tessera/` | F1: the new modules |
+| 2026-10-16 | `app/build.gradle.kts` | `projects.tessera.enterprise` instead of `features.enterprise.implFoss`, `projects.appicon.tessera` instead of `appicon.element` | F1: own EnterpriseService and icon (plan, section 2.2). Test: `TesseraEnterpriseServiceTest`, CI assembles the APK |
+| 2026-10-16 | `app/src/main/res/values{,-night}/themes.xml`, `values/colors.xml` | splash icon `splash_logo`, splash background = Tessera canvas colors | F1: splash screen |
 
 ## Added files
 
