@@ -182,6 +182,7 @@ class KonsistClassNameTest {
                 "Preferences",
                 "Rust",
                 "SharedPreferences",
+                "Tessera",
             )
             .assertEmpty()
     }

@@ -10,6 +10,7 @@ package io.element.android.tests.konsist
 
 import com.google.common.truth.Truth.assertThat
 import com.lemonappdev.konsist.api.Konsist
+import com.lemonappdev.konsist.api.declaration.KoFileDeclaration
 import com.lemonappdev.konsist.api.verify.assertTrue
 import org.junit.Test
 
@@ -30,6 +31,7 @@ class KonsistLicenseTest {
             .files
             .filter {
                 it.moduleName.startsWith("enterprise").not() &&
+                    it.isTesseraOwn().not() &&
                     it.moduleName != "libraries/rustls-tls" &&
                     it.nameWithExtension != "locales.kt" &&
                     it.name.startsWith("Template ").not()
@@ -49,6 +51,7 @@ class KonsistLicenseTest {
             .files
             .filter {
                 it.moduleName.endsWith("rustls-tls").not() &&
+                it.isTesseraOwn().not() &&
                 it.nameWithExtension != "locales.kt" &&
                 it.nameWithExtension != "KonsistLicenseTest.kt" &&
                     it.name.startsWith("Template ").not()
@@ -58,6 +61,10 @@ class KonsistLicenseTest {
             }
     }
 }
+
+// Files written by Tessera (modules `tessera/*` and `appicon/tessera`) carry the Tessera header, not Element's.
+private fun KoFileDeclaration.isTesseraOwn(): Boolean =
+    moduleName.startsWith("tessera") || moduleName == "appicon/tessera"
 
 private fun String.count(subString: String): Int {
     var count = 0

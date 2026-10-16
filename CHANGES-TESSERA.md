@@ -20,6 +20,9 @@ Every change to an upstream file gets its own commit with the `tessera:` prefix 
 | 2026-10-16 | `appconfig/build.gradle.kts` | `URL_POLICY`, `BUG_REPORT_URL`, `BUG_REPORT_APP_NAME` come from `BuildTimeConfig` in all builds | F1: no fallback to the Element rageshake server. Test: `TesseraBuildConfigTest` |
 | 2026-10-16 | `appconfig/.../ApplicationConfig.kt` | `PRODUCTION_APPLICATION_NAME`, `DESKTOP_APPLICATION_NAME` = `Tessera` | F1: the name in strings. Test: `TesseraBuildConfigTest` |
 
+| 2026-10-16 | `tests/konsist/.../KonsistLicenseTest.kt` | files of the modules `tessera/*` and `appicon/tessera` are exempt from the Element header check | our files carry the Tessera AGPL header; the tests stay green |
+| 2026-10-16 | `tests/konsist/.../KonsistClassNameTest.kt` | `Tessera` added to the allowed prefixes of `@ContributesBinding` classes | `TesseraEnterpriseService` and the other bindings of `tessera/enterprise` |
+
 ## Added files
 
 | Date | File | Purpose |
