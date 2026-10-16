@@ -12,15 +12,24 @@ import android.content.res.Configuration
 import android.os.LocaleList
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.dp
 import app.cash.paparazzi.DeviceConfig
 import app.cash.paparazzi.Paparazzi
 import base.ComposablePreviewProvider
@@ -55,6 +64,7 @@ class TesseraScreenshotTest(
         Splash,
         SignIn,
         ChatList,
+        LauncherIcon,
     }
 
     @get:Rule(order = 0)
@@ -91,6 +101,7 @@ class TesseraScreenshotTest(
                             TesseraScreen.Splash -> Splash()
                             TesseraScreen.SignIn -> SignIn()
                             TesseraScreen.ChatList -> ChatList()
+                            TesseraScreen.LauncherIcon -> LauncherIcon()
                         }
                     }
                 }
@@ -110,6 +121,51 @@ class TesseraScreenshotTest(
             Image(
                 painter = painterResource(id = TesseraR.drawable.splash_logo),
                 contentDescription = null,
+            )
+        }
+    }
+
+    /** The adaptive launcher icon the way a launcher masks it: squircle, circle, and the themed (monochrome) layer. */
+    @Composable
+    private fun LauncherIcon() {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(ElementTheme.colors.bgCanvasDefault)
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            IconLayers(Modifier.size(88.dp).clip(RoundedCornerShape(28.dp)))
+            IconLayers(Modifier.size(88.dp).clip(CircleShape))
+            Box(
+                modifier = Modifier
+                    .size(88.dp)
+                    .clip(CircleShape)
+                    .background(ElementTheme.colors.bgSubtlePrimary),
+            ) {
+                Image(
+                    painter = painterResource(id = TesseraR.drawable.ic_launcher_monochrome),
+                    contentDescription = null,
+                    colorFilter = ColorFilter.tint(ElementTheme.colors.textPrimary),
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
+        }
+    }
+
+    @Composable
+    private fun IconLayers(modifier: Modifier) {
+        Box(modifier = modifier) {
+            Image(
+                painter = painterResource(id = TesseraR.drawable.ic_launcher_background),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+            )
+            Image(
+                painter = painterResource(id = TesseraR.drawable.ic_launcher_foreground),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
             )
         }
     }
