@@ -59,5 +59,7 @@ dependencies {
 
     testCommonDependencies(libs)
     testImplementation(projects.appconfig)
+    testImplementation(projects.features.location.api)
+    testImplementation(projects.features.location.impl)
     testImplementation(projects.libraries.matrix.test)
 }

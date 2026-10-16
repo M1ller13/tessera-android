@@ -30,13 +30,9 @@ android {
         )
         buildConfigFieldStr(
             name = "MAPTILER_API_KEY",
-            value = if (isEnterpriseBuild) {
-                BuildTimeConfig.SERVICES_MAPTILER_APIKEY
-            } else {
-                System.getenv("ELEMENT_ANDROID_MAPTILER_API_KEY")
-                    ?: readLocalProperty("services.maptiler.apikey")
-            }
-                ?: ""
+            // Tessera: the key comes only from BuildTimeConfig (empty), never from the environment or local.properties,
+            // so `LocationService.isServiceAvailable()` is false and the location feature stays off in every build.
+            value = BuildTimeConfig.SERVICES_MAPTILER_APIKEY ?: ""
         )
         buildConfigFieldStr(
             name = "MAPTILER_LIGHT_MAP_ID",
