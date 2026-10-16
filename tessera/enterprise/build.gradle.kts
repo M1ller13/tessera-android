@@ -57,7 +57,7 @@ dependencies {
     implementation(projects.libraries.androidutils)
     implementation(projects.libraries.matrix.api)
 
-    testCommonDependencies(libs)
+    testCommonDependencies(libs, includeTestComposeView = true)
     testImplementation(projects.appconfig)
     testImplementation(projects.features.location.api)
     testImplementation(projects.features.location.impl)

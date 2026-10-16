@@ -34,10 +34,10 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import io.element.android.compound.annotations.CoreColorToken
+import io.element.android.compound.colors.SemanticColorsLightDark
 import io.element.android.compound.tokens.compoundTypography
 import io.element.android.compound.tokens.generated.SemanticColors
 import io.element.android.compound.tokens.generated.TypographyTokens
-import io.element.android.compound.tokens.generated.compoundColorsDark
 import io.element.android.compound.tokens.generated.compoundColorsLight
 import io.element.android.compound.tokens.generated.internal.DarkColorTokens
 
@@ -82,6 +82,13 @@ object ElementTheme {
 internal val LocalCompoundColors = staticCompositionLocalOf { compoundColorsLight }
 
 /**
+ * Tessera: the palette [ElementTheme] uses when its `compoundLight` / `compoundDark` are not passed.
+ * It is the Compound palette unless a caller provides another one: previews and screenshot tests
+ * (which call `ElementTheme` without colors) can show the Tessera palette this way.
+ */
+val LocalDefaultSemanticColors = staticCompositionLocalOf { SemanticColorsLightDark.default }
+
+/**
  * Sets up the theme for the application, or a part of it.
  *
  * @param theme the [Theme] to use. Defaults to [Theme.Dark] or [Theme.Light] based on the system setting.
@@ -104,8 +111,8 @@ fun ElementTheme(
     lightStatusBar: Boolean = !theme.isDark(),
     // true to enable MaterialYou
     dynamicColor: Boolean = false,
-    compoundLight: SemanticColors = compoundColorsLight,
-    compoundDark: SemanticColors = compoundColorsDark,
+    compoundLight: SemanticColors = LocalDefaultSemanticColors.current.light,
+    compoundDark: SemanticColors = LocalDefaultSemanticColors.current.dark,
     materialColorsLight: ColorScheme = compoundLight.toMaterialColorScheme(),
     materialColorsDark: ColorScheme = compoundDark.toMaterialColorScheme(),
     typography: Typography = compoundTypography,
