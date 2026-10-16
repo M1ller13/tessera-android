@@ -16,6 +16,8 @@ import io.element.android.features.logout.api.direct.aDirectLogoutState
 import io.element.android.features.rageshake.api.RageshakeFeatureAvailability
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.designsystem.utils.snackbar.SnackbarDispatcher
+import io.element.android.libraries.featureflag.api.FeatureFlagService
+import io.element.android.libraries.featureflag.test.FakeFeatureFlagService
 import io.element.android.libraries.indicator.api.IndicatorService
 import io.element.android.libraries.indicator.test.FakeIndicatorService
 import io.element.android.libraries.matrix.api.MatrixClient
@@ -36,6 +38,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
+import ru.tesseramessenger.android.features.TesseraFeatures
 
 class HomePresenterTest {
     @get:Rule
@@ -136,13 +139,35 @@ class HomePresenterTest {
             sessionStore = InMemorySessionStore(
                 updateUserProfileResult = { _, _, _ -> },
             ),
+            // Tessera: Spaces are removed by default, so the flag is switched on to test the tab itself.
+            featureFlagService = FakeFeatureFlagService(initialState = mapOf(TesseraFeatures.Spaces.key to true)),
         )
         presenter.test {
             val initialState = awaitItem()
             assertThat(initialState.currentHomeNavigationBarItem).isEqualTo(HomeNavigationBarItem.Chats)
-            initialState.eventSink(HomeEvent.SelectHomeNavigationBarItem(HomeNavigationBarItem.Spaces))
+            // The flag is read asynchronously.
+            val spacesEnabledState = awaitItem()
+            assertThat(spacesEnabledState.isSpacesEnabled).isTrue()
+            spacesEnabledState.eventSink(HomeEvent.SelectHomeNavigationBarItem(HomeNavigationBarItem.Spaces))
             val finalState = awaitItem()
             assertThat(finalState.currentHomeNavigationBarItem).isEqualTo(HomeNavigationBarItem.Spaces)
+        }
+    }
+
+    @Test
+    fun `present - Spaces tab is removed by default`() = runTest {
+        val presenter = createHomePresenter(
+            sessionStore = InMemorySessionStore(
+                updateUserProfileResult = { _, _, _ -> },
+            ),
+        )
+        presenter.test {
+            val initialState = awaitItem()
+            assertThat(initialState.isSpacesEnabled).isFalse()
+            assertThat(initialState.navigationBarItems).containsExactly(HomeNavigationBarItem.Chats)
+            // Selecting Spaces does nothing: the user stays on the chats.
+            initialState.eventSink(HomeEvent.SelectHomeNavigationBarItem(HomeNavigationBarItem.Spaces))
+            expectNoEvents()
         }
     }
 }
@@ -155,6 +180,7 @@ internal fun createHomePresenter(
     indicatorService: IndicatorService = FakeIndicatorService(),
     homeSpacesPresenter: Presenter<HomeSpacesState> = Presenter { aHomeSpacesState() },
     sessionStore: SessionStore = InMemorySessionStore(),
+    featureFlagService: FeatureFlagService = FakeFeatureFlagService(),
 ) = HomePresenter(
     client = client,
     syncService = syncService,
@@ -165,4 +191,5 @@ internal fun createHomePresenter(
     logoutPresenter = { aDirectLogoutState() },
     rageshakeFeatureAvailability = rageshakeFeatureAvailability,
     sessionStore = sessionStore,
+    featureFlagService = featureFlagService,
 )

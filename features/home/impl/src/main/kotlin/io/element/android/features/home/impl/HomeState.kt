@@ -27,11 +27,14 @@ data class HomeState(
     val currentHomeNavigationBarItem: HomeNavigationBarItem,
     val roomListState: RoomListState,
     val homeSpacesState: HomeSpacesState,
+    /** Tessera: false hides the Spaces tab, see TesseraFeatures.Spaces. */
+    val isSpacesEnabled: Boolean,
     val snackbarMessage: SnackbarMessage?,
     val canReportBug: Boolean,
     val directLogoutState: DirectLogoutState,
     val eventSink: (HomeEvent) -> Unit,
 ) {
     val isBackHandlerEnabled = currentHomeNavigationBarItem != HomeNavigationBarItem.Chats || roomListState.spaceFiltersState is SpaceFiltersState.Selected
-    val displayRoomListFilters = currentHomeNavigationBarItem == HomeNavigationBarItem.Chats && roomListState.displayFilters
+    val navigationBarItems: List<HomeNavigationBarItem> = HomeNavigationBarItem.entries.filter { isSpacesEnabled || it != HomeNavigationBarItem.Spaces }
+    val displayRoomListFilters =currentHomeNavigationBarItem == HomeNavigationBarItem.Chats && roomListState.displayFilters
 }

@@ -35,6 +35,7 @@ dependencies {
     implementation(projects.libraries.encryptedDb)
     implementation(libs.serialization.json)
     implementation(projects.libraries.featureflag.api)
+    implementation(projects.tessera.features)
     implementation(projects.libraries.matrix.api)
     implementation(projects.libraries.matrixui)
     implementation(projects.libraries.designsystem)

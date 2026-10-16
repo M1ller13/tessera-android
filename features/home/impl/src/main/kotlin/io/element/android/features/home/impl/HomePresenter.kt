@@ -26,6 +26,7 @@ import io.element.android.features.rageshake.api.RageshakeFeatureAvailability
 import io.element.android.libraries.architecture.Presenter
 import io.element.android.libraries.designsystem.utils.snackbar.SnackbarDispatcher
 import io.element.android.libraries.designsystem.utils.snackbar.collectSnackbarMessageAsState
+import io.element.android.libraries.featureflag.api.FeatureFlagService
 import io.element.android.libraries.indicator.api.IndicatorService
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.sync.SyncService
@@ -33,6 +34,7 @@ import io.element.android.libraries.sessionstorage.api.SessionStore
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
+import ru.tesseramessenger.android.features.TesseraFeatures
 
 @Inject
 class HomePresenter(
@@ -45,6 +47,7 @@ class HomePresenter(
     private val logoutPresenter: Presenter<DirectLogoutState>,
     private val rageshakeFeatureAvailability: RageshakeFeatureAvailability,
     private val sessionStore: SessionStore,
+    private val featureFlagService: FeatureFlagService,
 ) : Presenter<HomeState> {
     private val currentUserWithNeighborsBuilder = CurrentUserWithNeighborsBuilder()
 
@@ -64,9 +67,13 @@ class HomePresenter(
         val roomListState = roomListPresenter.present()
         val homeSpacesState = homeSpacesPresenter.present()
         var currentHomeNavigationBarItemOrdinal by rememberSaveable { mutableIntStateOf(HomeNavigationBarItem.Chats.ordinal) }
+        // Tessera: the Spaces tab is a removed feature, see TesseraFeatures.
+        val isSpacesEnabled by remember { featureFlagService.isFeatureEnabledFlow(TesseraFeatures.Spaces) }.collectAsState(false)
         val currentHomeNavigationBarItem by remember {
             derivedStateOf {
                 HomeNavigationBarItem.from(currentHomeNavigationBarItemOrdinal)
+                    .takeIf { isSpacesEnabled || it != HomeNavigationBarItem.Spaces }
+                    ?: HomeNavigationBarItem.Chats
             }
         }
         LaunchedEffect(Unit) {
@@ -96,6 +103,7 @@ class HomePresenter(
             currentHomeNavigationBarItem = currentHomeNavigationBarItem,
             roomListState = roomListState,
             homeSpacesState = homeSpacesState,
+            isSpacesEnabled = isSpacesEnabled,
             snackbarMessage = snackbarMessage,
             canReportBug = canReportBug,
             directLogoutState = directLogoutState,
