@@ -1,20 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Splash screen icon (288dp canvas, the visible circle of Android 12 is 192dp). -->
+<!--
+  Splash screen icon (288dp canvas; Android 12 shows a 192dp circle of it): TesseraAppIcon of the prototype,
+  the same in the light and the dark theme.
+-->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="288dp"
     android:height="288dp"
     android:viewportWidth="288"
     android:viewportHeight="288">
     <group
-        android:scaleX="1.6"
-        android:scaleY="1.6"
-        android:translateX="92.8"
-        android:translateY="92.8">
+        android:translateX="88"
+        android:translateY="88">
         <path
             android:fillColor="#1B5E63"
-            android:pathData="M2,3L34,3L34,25L28,25L28,61L18,61L18,21L2,21Z" />
-        <path
-            android:fillColor="#1B5E63"
-            android:pathData="M39,3L62,3L62,21L46,21L46,61L33,61L33,25L39,25Z" />
+            android:pathData="M24.64,0H87.36a24.64,24.64 0 0 1 24.64,24.64V87.36a24.64,24.64 0 0 1 -24.64,24.64H24.64a24.64,24.64 0 0 1 -24.64,-24.64V24.64a24.64,24.64 0 0 1 24.64,-24.64Z" />
+        <group
+            android:scaleX="1.085"
+            android:scaleY="1.085"
+            android:translateX="21.3"
+            android:translateY="21.3">
+            <path
+                android:fillColor="#F0EEE9"
+                android:pathData="M2,3L34,3L34,25L28,25L28,61L18,61L18,21L2,21Z" />
+            <path
+                android:fillColor="#F0EEE9"
+                android:pathData="M39,3L62,3L62,21L46,21L46,61L33,61L33,25L39,25Z" />
+        </group>
     </group>
 </vector>
