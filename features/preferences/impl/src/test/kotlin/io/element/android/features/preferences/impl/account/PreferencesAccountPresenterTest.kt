@@ -139,6 +139,9 @@ class PreferencesAccountPresenterTest {
                 canDeactivateAccountResult = { true },
                 accountManagementUrlResult = { Result.success("a url") },
             ),
+            sessionEnterpriseService = FakeSessionEnterpriseService(
+                tweakMasUrlResult = { it },
+            ),
         ).test {
             val loadedState = consumeItemsUntilPredicate { it.accountManagementUrl != null }.last()
             assertThat(loadedState.canDeactivateAccount).isFalse()

@@ -44,8 +44,11 @@ Every change to an upstream file gets its own commit with the `tessera:` prefix 
 
 ## Not changed yet (planned)
 
-Branding, colors, fonts, links, push gateway — F1. Server allow-list and login — F2.
-Matrix ID hiding — F3. Removal of unused features — F4.
+Done in F1/F4 (PR "Tessera brand and removal of unused features"): name, palette, icon, splash and sign-in logo, links, no analytics /
+bug reports / UnifiedPush, Spaces, Labs, location, password deactivation and developer settings in release. Still open from F1: fonts
+(the generated `TypographyTokens` hard-code `FontFamily.Default`), a forced Russian fallback.
+
+Server allow-list and login — F2. Matrix ID hiding — F3.
 
 ## Signing
 

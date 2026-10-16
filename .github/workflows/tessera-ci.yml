@@ -107,9 +107,11 @@ jobs:
       - name: Fetch LFS test assets only
         run: git lfs pull --include="libraries/**/src/test/assets/**"
       - name: Unit tests
-        run: ./gradlew :app:testGplayDebugUnitTest testDebugUnitTest -x :tests:konsist:testDebugUnitTest $CI_GRADLE_ARG_PROPERTIES
+        # --continue: one failing module must not hide the failures of the others.
+        run: ./gradlew :app:testGplayDebugUnitTest testDebugUnitTest -x :tests:konsist:testDebugUnitTest --continue $CI_GRADLE_ARG_PROPERTIES
       - name: Konsist
-        run: ./gradlew :tests:konsist:testDebugUnitTest $CI_GRADLE_ARG_PROPERTIES
+        if: ${{ !cancelled() }}
+        run:./gradlew :tests:konsist:testDebugUnitTest $CI_GRADLE_ARG_PROPERTIES
 
   screenshots:
     name: Tessera screenshots (Paparazzi)
