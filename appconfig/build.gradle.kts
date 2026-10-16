@@ -22,27 +22,16 @@ android {
     defaultConfig {
         buildConfigFieldStr(
             name = "URL_POLICY",
-            value = if (isEnterpriseBuild) {
-                BuildTimeConfig.URL_POLICY ?: ""
-            } else {
-                "https://element.io/cookie-policy"
-            },
+            value = BuildTimeConfig.URL_POLICY ?: "",
         )
+        // Tessera: never fall back to the Element rageshake server, even in a non-enterprise build.
         buildConfigFieldStr(
             name = "BUG_REPORT_URL",
-            value = if (isEnterpriseBuild) {
-                BuildTimeConfig.BUG_REPORT_URL ?: ""
-            } else {
-                "https://rageshakes.element.io/api/submit"
-            },
+            value = BuildTimeConfig.BUG_REPORT_URL ?: "",
         )
         buildConfigFieldStr(
             name = "BUG_REPORT_APP_NAME",
-            value = if (isEnterpriseBuild) {
-                BuildTimeConfig.BUG_REPORT_APP_NAME ?: ""
-            } else {
-                "element-x-android"
-            },
+            value = BuildTimeConfig.BUG_REPORT_APP_NAME ?: "",
         )
     }
 }

@@ -15,6 +15,10 @@ Every change to an upstream file gets its own commit with the `tessera:` prefix 
 |---|---|---|---|
 | 2026-10-11 | `plugins/src/main/kotlin/config/BuildTimeConfig.kt` | `APPLICATION_ID` = `ru.tesseramessenger.android` | own application id (ADR-0020); the Gradle `namespace` stays `io.element.android.x` |
 | 2026-10-16 | `README.md` | note about the fork and `GIT_LFS_SKIP_SMUDGE=1` at the top | AGPL notice; LFS screenshots are not needed to build |
+| 2026-10-16 | `plugins/src/main/kotlin/config/BuildTimeConfig.kt` | name `Tessera`, `URL_*` → `tessera-messenger.ru` (placeholders), `URL_SUPPORT`, `PUSH_GATEWAY_URL` added, `PUSH_CONFIG_INCLUDE_UNIFIED_PUSH` = false | F1: brand, links, push gateway stub, no UnifiedPush. Test: `TesseraBuildConfigTest` |
+| 2026-10-16 | `plugins/src/main/kotlin/ModulesConfig.kt` | the analytics config is driven by the keys for every build, not only for `isEnterpriseBuild` | F1: keys are empty, so Posthog and Sentry are not compiled in (`services:analytics:noop`) |
+| 2026-10-16 | `appconfig/build.gradle.kts` | `URL_POLICY`, `BUG_REPORT_URL`, `BUG_REPORT_APP_NAME` come from `BuildTimeConfig` in all builds | F1: no fallback to the Element rageshake server. Test: `TesseraBuildConfigTest` |
+| 2026-10-16 | `appconfig/.../ApplicationConfig.kt` | `PRODUCTION_APPLICATION_NAME`, `DESKTOP_APPLICATION_NAME` = `Tessera` | F1: the name in strings. Test: `TesseraBuildConfigTest` |
 
 ## Added files
 
