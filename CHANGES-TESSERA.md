@@ -14,6 +14,7 @@ Every change to an upstream file gets its own commit with the `tessera:` prefix 
 | Date | File | Change | Why |
 |---|---|---|---|
 | 2026-10-11 | `plugins/src/main/kotlin/config/BuildTimeConfig.kt` | `APPLICATION_ID` = `ru.tesseramessenger.android` | own application id (ADR-0020); the Gradle `namespace` stays `io.element.android.x` |
+| 2026-10-16 | `README.md` | note about the fork and `GIT_LFS_SKIP_SMUDGE=1` at the top | AGPL notice; LFS screenshots are not needed to build |
 
 ## Added files
 

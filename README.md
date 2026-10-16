@@ -6,6 +6,9 @@
 [![Element X Android Matrix room #element-x-android:matrix.org](https://img.shields.io/matrix/element-x-android:matrix.org.svg?label=%23element-x-android:matrix.org&logo=matrix&server_fqdn=matrix.org)](https://matrix.to/#/#element-x-android:matrix.org)
 [![Localazy](https://img.shields.io/endpoint?url=https%3A%2F%2Fconnect.localazy.com%2Fstatus%2Felement%2Fdata%3Fcontent%3Dall%26title%3Dlocalazy%26logo%3Dtrue)](https://localazy.com/p/element)
 
+> **Tessera Android** is a modified fork of Element X Android (AGPL-3.0). See [NOTICE](NOTICE) and [CHANGES-TESSERA.md](CHANGES-TESSERA.md).
+> Clone with `GIT_LFS_SKIP_SMUDGE=1 git clone https://github.com/M1ller13/tessera-android.git`: the upstream screenshot tests are stored in Git LFS (~2.4 GB) and are not needed to build.
+
 # Element X Android
 
 Element X Android is the next-generation [Matrix](https://matrix.org/) client provided by [Element](https://element.io/).
