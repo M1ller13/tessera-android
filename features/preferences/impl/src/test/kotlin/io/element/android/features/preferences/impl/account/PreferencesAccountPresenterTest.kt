@@ -34,6 +34,7 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
+import ru.tesseramessenger.android.features.TesseraFeatures
 
 class PreferencesAccountPresenterTest {
     @get:Rule
@@ -53,6 +54,10 @@ class PreferencesAccountPresenterTest {
             sessionEnterpriseService = FakeSessionEnterpriseService(
                 tweakMasUrlResult = { "tweaked $it" },
             ),
+            // Tessera: deactivation with a password is switched off by TesseraFeatures, so it is switched on here.
+            featureFlagService = FakeFeatureFlagService(
+                initialState = mapOf(TesseraFeatures.PasswordDeactivation.key to true)
+            ),
         ).test {
             val initialState = awaitItem()
             assertThat(initialState.myUser).isEqualTo(
@@ -67,7 +72,7 @@ class PreferencesAccountPresenterTest {
             assertThat(initialState.showLinkNewDevice).isFalse()
             assertThat(initialState.directLogoutState).isEqualTo(aDirectLogoutState())
             assertThat(initialState.snackbarMessage).isNull()
-            val loadedState = consumeItemsUntilPredicate { it.accountManagementUrl != null }.last()
+            val loadedState = consumeItemsUntilPredicate { it.accountManagementUrl != null && it.canDeactivateAccount }.last()
             assertThat(loadedState.showSecureBackup).isFalse()
             assertThat(loadedState.canDeactivateAccount).isTrue()
             assertThat(loadedState.canReportBug).isTrue()
@@ -123,6 +128,20 @@ class PreferencesAccountPresenterTest {
             consumeItemsUntilPredicate { !it.showSecureBackup }
             sessionVerificationService.emitNeedsSessionVerification(false)
             consumeItemsUntilPredicate { it.showSecureBackup }
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `present - password deactivation is removed by default even if the Matrix client allows it`() = runTest {
+        createPreferencesAccountPresenter(
+            matrixClient = FakeMatrixClient(
+                canDeactivateAccountResult = { true },
+                accountManagementUrlResult = { Result.success("a url") },
+            ),
+        ).test {
+            val loadedState = consumeItemsUntilPredicate { it.accountManagementUrl != null }.last()
+            assertThat(loadedState.canDeactivateAccount).isFalse()
             cancelAndIgnoreRemainingEvents()
         }
     }

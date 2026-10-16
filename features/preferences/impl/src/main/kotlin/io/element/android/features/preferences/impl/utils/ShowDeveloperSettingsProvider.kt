@@ -31,6 +31,8 @@ class ShowDeveloperSettingsProvider(
     val showDeveloperSettings: StateFlow<Boolean> = _showDeveloperSettings
 
     fun unlockDeveloperSettings(scope: CoroutineScope) {
+        // Tessera: release builds have no developer settings, the 7-tap unlock is disabled.
+        if (!isDeveloperBuild) return
         if (multipleTapToUnlock.unlock(scope)) {
             _showDeveloperSettings.value = true
         }

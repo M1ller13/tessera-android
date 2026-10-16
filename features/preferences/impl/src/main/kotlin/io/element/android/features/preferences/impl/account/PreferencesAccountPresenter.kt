@@ -27,6 +27,7 @@ import io.element.android.libraries.featureflag.api.FeatureFlags
 import io.element.android.libraries.indicator.api.IndicatorService
 import io.element.android.libraries.matrix.api.MatrixClient
 import io.element.android.libraries.matrix.api.verification.SessionVerificationService
+import ru.tesseramessenger.android.features.TesseraFeatures
 
 @Inject
 class PreferencesAccountPresenter(
@@ -61,6 +62,10 @@ class PreferencesAccountPresenter(
             mutableStateOf(false)
         }
         val canReportBug by remember { rageshakeFeatureAvailability.isAvailable() }.collectAsState(false)
+        // Tessera: deactivation with a password is a removed feature, see TesseraFeatures.
+        val isPasswordDeactivationEnabled by remember {
+            featureFlagService.isFeatureEnabledFlow(TesseraFeatures.PasswordDeactivation)
+        }.collectAsState(false)
         LaunchedEffect(Unit) {
             canDeactivateAccount = matrixClient.canDeactivateAccount()
         }
@@ -82,7 +87,7 @@ class PreferencesAccountPresenter(
             accountManagementUrl = accountManagementUrl,
             canReportBug = canReportBug,
             showLinkNewDevice = showLinkNewDevice,
-            canDeactivateAccount = canDeactivateAccount,
+            canDeactivateAccount = canDeactivateAccount && isPasswordDeactivationEnabled,
             directLogoutState = directLogoutState,
             snackbarMessage = snackbarMessage,
         )

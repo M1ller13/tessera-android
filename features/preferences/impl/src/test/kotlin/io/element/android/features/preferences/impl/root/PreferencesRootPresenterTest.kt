@@ -47,6 +47,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
+import ru.tesseramessenger.android.features.TesseraFeatures
 
 class PreferencesRootPresenterTest {
     @get:Rule
@@ -153,16 +154,17 @@ class PreferencesRootPresenterTest {
     }
 
     @Test
-    fun `present - developer settings can be enabled in release builds`() = runTest {
+    fun `present - developer settings can not be enabled in release builds`() = runTest {
+        // Tessera: the 7-tap unlock is disabled in release builds.
         createPreferencesRootPresenter(
             showDeveloperSettingsProvider = ShowDeveloperSettingsProvider(aBuildMeta(BuildType.RELEASE))
         ).test {
             val loadedState = awaitFirstItem()
-            repeat(times = ShowDeveloperSettingsProvider.DEVELOPER_SETTINGS_COUNTER) {
+            repeat(times = ShowDeveloperSettingsProvider.DEVELOPER_SETTINGS_COUNTER * 2) {
                 assertThat(loadedState.showDeveloperSettings).isFalse()
                 loadedState.eventSink(PreferencesRootEvent.OnVersionInfoClick)
             }
-            assertThat(awaitItem().showDeveloperSettings).isTrue()
+            expectNoEvents()
         }
     }
 
@@ -188,6 +190,8 @@ class PreferencesRootPresenterTest {
     fun `present - labs can be shown if any feature flag is in labs and not finished`() = runTest {
         createPreferencesRootPresenter(
             featureFlagService = FakeFeatureFlagService(
+                // Tessera: the Labs screen is switched off by TesseraFeatures.Labs, so it is switched on for this test.
+                initialState = mapOf(TesseraFeatures.Labs.key to true),
                 getAvailableFeaturesResult = { _, _ ->
                     listOf(
                         FakeFeature(
@@ -200,7 +204,29 @@ class PreferencesRootPresenterTest {
                 }
             ),
         ).test {
-            assertThat(awaitItem().showLabsItem).isTrue()
+            consumeItemsUntilPredicate { it.showLabsItem }
+            cancelAndIgnoreRemainingEvents()
+        }
+    }
+
+    @Test
+    fun `present - labs are removed by default even if a feature flag is in labs`() = runTest {
+        createPreferencesRootPresenter(
+            featureFlagService = FakeFeatureFlagService(
+                getAvailableFeaturesResult = { _, _ ->
+                    listOf(
+                        FakeFeature(
+                            key = "feature_1",
+                            title = "Feature 1",
+                            isInLabs = true,
+                            isFinished = false,
+                        )
+                    )
+                }
+            ),
+        ).test {
+            val loadedState = consumeItemsUntilPredicate { it.userStatusState != null }.last()
+            assertThat(loadedState.showLabsItem).isFalse()
             cancelAndIgnoreRemainingEvents()
         }
     }

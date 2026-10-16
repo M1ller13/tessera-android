@@ -56,6 +56,7 @@ dependencies {
     implementation(projects.libraries.designsystem)
     implementation(projects.libraries.featureflag.api)
     implementation(projects.libraries.featureflag.ui)
+    implementation(projects.tessera.features)
     implementation(projects.libraries.network)
     implementation(projects.libraries.pushstore.api)
     implementation(projects.libraries.indicator.api)
