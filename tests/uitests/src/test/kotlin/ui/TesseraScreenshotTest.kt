@@ -145,7 +145,7 @@ class TesseraScreenshotTest(
                     .background(ElementTheme.colors.bgSubtlePrimary),
             ) {
                 Image(
-                    painter = painterResource(id = TesseraR.drawable.ic_launcher_monochrome),
+                    painter = painterResource(id = TesseraR.drawable.tessera_icon_monochrome),
                     contentDescription = null,
                     colorFilter = ColorFilter.tint(ElementTheme.colors.textPrimary),
                     modifier = Modifier.fillMaxSize(),
@@ -158,12 +158,12 @@ class TesseraScreenshotTest(
     private fun IconLayers(modifier: Modifier) {
         Box(modifier = modifier) {
             Image(
-                painter = painterResource(id = TesseraR.drawable.ic_launcher_background),
+                painter = painterResource(id = TesseraR.drawable.tessera_icon_background),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
             )
             Image(
-                painter = painterResource(id = TesseraR.drawable.ic_launcher_foreground),
+                painter = painterResource(id = TesseraR.drawable.tessera_icon_foreground),
                 contentDescription = null,
                 modifier = Modifier.fillMaxSize(),
             )
