@@ -45,6 +45,19 @@ android {
             name = "POLICY_URI",
             value = BuildTimeConfig.URL_POLICY ?: "https://element.io/privacy"
         )
+        // Tessera: the static MAS client (issuer -> client id), see OAuthConfig
+        buildConfigFieldStr(
+            name = "MAS_ISSUER",
+            value = BuildTimeConfig.MAS_ISSUER
+        )
+        buildConfigFieldStr(
+            name = "MAS_CLIENT_ID",
+            value = BuildTimeConfig.MAS_CLIENT_ID
+        )
+        buildConfigFieldStr(
+            name = "STAND_MAS_ISSUER",
+            value = BuildTimeConfig.STAND_MAS_ISSUER
+        )
     }
 }
 

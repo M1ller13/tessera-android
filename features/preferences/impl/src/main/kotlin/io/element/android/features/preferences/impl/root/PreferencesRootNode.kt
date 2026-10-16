@@ -21,6 +21,7 @@ import io.element.android.annotations.ContributesNode
 import io.element.android.compound.theme.ElementTheme
 import io.element.android.features.logout.api.direct.DirectLogoutEvent
 import io.element.android.features.logout.api.direct.DirectLogoutView
+import io.element.android.features.preferences.impl.BuildConfig
 import io.element.android.features.preferences.impl.account.PreferencesAccountCallback
 import io.element.android.libraries.androidutils.browser.openUrlInChromeCustomTab
 import io.element.android.libraries.architecture.callback
@@ -96,7 +97,8 @@ class PreferencesRootNode(
                     callback.startSignOutFlow()
                 }
             },
-            onDeactivateClick = callback::startAccountDeactivationFlow
+            // Tessera: the account is deleted on the site, in a Custom Tab (ADR-0011), not with a password in the app
+            onDeactivateClick = { onManageAccountClick(activity, BuildConfig.URL_DELETE_ACCOUNT, isDark) },
         )
 
         directLogoutView.Render(state = state.preferencesAccountState.directLogoutState)

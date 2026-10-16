@@ -139,7 +139,8 @@ class OnboardingViewTest : RobolectricTestParameter() {
                 eventSink = eventSink,
             ),
         )
-        val buttonText = activity!!.getString(R.string.screen_onboarding_sign_in_to, "element.io")
+        // Tessera: one button without the server name
+        val buttonText = activity!!.getString(R.string.tessera_onboarding_sign_in_by_phone)
         onNodeWithText(buttonText).performClick()
         eventSink.assertSingle(OnBoardingEvent.OnSignIn(AccountProvider.Generic("element.io")))
     }

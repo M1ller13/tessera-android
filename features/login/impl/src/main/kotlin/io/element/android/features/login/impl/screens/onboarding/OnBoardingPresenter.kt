@@ -67,14 +67,19 @@ class OnBoardingPresenter(
             // If accountProviderAllowList() returns a singleton list, and the user is not free to use another
             // account provider, this is the default account provider.
             // In this case, the user can sign in using this homeserver, or use QrCode login
+            // Tessera: the user never chooses, the first provider of the list is the default one (the stand in debug)
             if (canConnectToAnyAccountProvider) {
                 null
-            } else {
+            } else if (OnBoardingConfig.CAN_CHOOSE_ACCOUNT_PROVIDER) {
                 enterpriseService.accountProviderAllowList().singleOrNull()
+            } else {
+                enterpriseService.accountProviderAllowList().firstOrNull()
             }
         }
         val mustChooseAccountProvider = remember {
-            !canConnectToAnyAccountProvider && enterpriseService.accountProviderAllowList().size > 1
+            OnBoardingConfig.CAN_CHOOSE_ACCOUNT_PROVIDER &&
+                !canConnectToAnyAccountProvider &&
+                enterpriseService.accountProviderAllowList().size > 1
         }
         val linkAccountProvider by produceState<AccountProvider?>(initialValue = null) {
             // Account provider from the link, if allowed by the enterprise service
@@ -142,7 +147,7 @@ class OnBoardingPresenter(
             productionApplicationName = buildMeta.productionApplicationName,
             defaultAccountProvider = defaultAccountProvider,
             mustChooseAccountProvider = mustChooseAccountProvider,
-            canLoginWithQrCode = canLoginWithQrCode,
+            canLoginWithQrCode = canLoginWithQrCode && OnBoardingConfig.CAN_LOGIN_WITH_QR_CODE,
             canCreateAccount = defaultAccountProvider == null && canConnectToAnyAccountProvider && OnBoardingConfig.CAN_CREATE_ACCOUNT,
             canReportBug = canReportBug && showReportBug,
             loginModeState = loginModeState,

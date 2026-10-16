@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2026 Tessera.
+  ~
+  ~ SPDX-License-Identifier: AGPL-3.0-only
+  ~ Please see LICENSE files in the repository root for full details.
+  -->
+<!-- Strings of Tessera that have no upstream counterpart; `localazy.xml` is generated and never edited. -->
+<resources>
+    <string name="tessera_onboarding_sign_in_by_phone">"Sign in with phone number"</string>
+</resources>

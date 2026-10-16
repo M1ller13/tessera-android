@@ -27,8 +27,14 @@ object OAuthConfig {
     // Note: host must match with the host of CLIENT_URI
     const val POLICY_URI = BuildConfig.POLICY_URI
 
-    // Some homeservers/auth issuers don't support dynamic client registration, and have to be registered manually
-    val STATIC_REGISTRATIONS = mapOf(
-        "https://id.thirdroom.io/realms/thirdroom" to "elementx",
-    )
+    // Some homeservers/auth issuers don't support dynamic client registration, and have to be registered manually.
+    // Tessera: only the static client `tessera-android` of our MAS (MAS-PLAN M3); the stand issuer only in debug builds.
+    val STATIC_REGISTRATIONS = staticRegistrations(isDebug = BuildConfig.DEBUG)
+
+    fun staticRegistrations(isDebug: Boolean): Map<String, String> = buildMap {
+        put(BuildConfig.MAS_ISSUER, BuildConfig.MAS_CLIENT_ID)
+        if (isDebug) {
+            put(BuildConfig.STAND_MAS_ISSUER, BuildConfig.MAS_CLIENT_ID)
+        }
+    }
 }

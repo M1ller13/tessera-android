@@ -38,6 +38,15 @@ android {
             name = "URL_SUPPORT",
             value = BuildTimeConfig.URL_SUPPORT ?: "",
         )
+        // The allow-list of account providers (F2): the Tessera server, plus the dev stand in debug builds.
+        buildConfigFieldStr(
+            name = "SERVER_NAME",
+            value = BuildTimeConfig.SERVER_NAME,
+        )
+        buildConfigFieldStr(
+            name = "STAND_HOMESERVER_URL",
+            value = BuildTimeConfig.STAND_HOMESERVER_URL,
+        )
     }
 
     testOptions {

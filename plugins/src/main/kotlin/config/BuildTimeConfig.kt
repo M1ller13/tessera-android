@@ -11,8 +11,20 @@ package config
 object BuildTimeConfig {
     const val APPLICATION_ID = "ru.tesseramessenger.android"
     const val APPLICATION_NAME = "Tessera"
-    val METADATA_HOST_REVERSED: String? = null
+    // Redirect scheme of the static MAS client: `ru.tessera-messenger:/` (MAS-PLAN M3). Debug builds use it too.
+    val METADATA_HOST_REVERSED: String? = "ru.tessera-messenger"
     val OAUTH_CLIENT_URL_PATH: String? = "apps/android"
+
+    // Server and sign-in (F2). The only server in release is the Tessera one; the stand is added in debug builds.
+    const val SERVER_NAME = "tessera-messenger.ru"
+    const val MAS_ISSUER = "https://account.tessera-messenger.ru/"
+
+    // Static MAS client `tessera-android` (MAS-PLAN M3); dynamic registration is not used.
+    const val MAS_CLIENT_ID = "01M4KJVV2TACDDS2M6Q3NGSXQ3"
+
+    // The dev stand as seen from a phone over `adb reverse` (docs/runbooks/matrix-login.md); debug builds only.
+    const val STAND_HOMESERVER_URL = "http://127.0.0.1:8008"
+    const val STAND_MAS_ISSUER = "http://127.0.0.1:8190/"
 
     // Tessera pages: placeholders until the site is published (the same host as the Keycloak theme).
     val URL_WEBSITE: String? = "https://tessera-messenger.ru"
@@ -22,6 +34,9 @@ object BuildTimeConfig {
     val URL_PRIVACY: String? = "https://tessera-messenger.ru/privacy"
     val URL_POLICY: String? = "https://tessera-messenger.ru/privacy"
     val URL_SUPPORT: String? = "https://tessera-messenger.ru/support"
+
+    // "Delete account" opens this page in a Custom Tab (ADR-0011).
+    val URL_DELETE_ACCOUNT: String? = "https://tessera-messenger.ru/delete-account"
     val SERVICES_MAPTILER_BASE_URL: String? = null
     val SERVICES_MAPTILER_APIKEY: String? = null
     val SERVICES_MAPTILER_LIGHT_MAPID: String? = null

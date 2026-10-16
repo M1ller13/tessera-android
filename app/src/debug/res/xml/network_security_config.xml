@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- Ref: https://developer.android.com/training/articles/security-config.html -->
+    <!--
+      Tessera (F2), debug builds only: the dev stand is reached over `adb reverse` on 127.0.0.1 without TLS
+      (docs/runbooks/matrix-login.md, section "Android"). It replaces src/main/res/xml/network_security_config.xml.
+    -->
+    <base-config cleartextTrafficPermitted="false">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">127.0.0.1</domain>
+        <domain includeSubdomains="false">localhost</domain>
+    </domain-config>
+</network-security-config>

@@ -11,6 +11,7 @@ import com.google.common.truth.Truth.assertThat
 import io.element.android.features.enterprise.api.SessionEnterpriseService
 import io.element.android.features.enterprise.test.FakeSessionEnterpriseService
 import io.element.android.features.logout.api.direct.aDirectLogoutState
+import io.element.android.features.preferences.impl.BuildConfig
 import io.element.android.features.rageshake.api.RageshakeFeatureAvailability
 import io.element.android.libraries.designsystem.utils.snackbar.SnackbarDispatcher
 import io.element.android.libraries.featureflag.api.FeatureFlagService
@@ -34,7 +35,6 @@ import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
-import ru.tesseramessenger.android.features.TesseraFeatures
 
 class PreferencesAccountPresenterTest {
     @get:Rule
@@ -53,10 +53,6 @@ class PreferencesAccountPresenterTest {
             matrixClient = matrixClient,
             sessionEnterpriseService = FakeSessionEnterpriseService(
                 tweakMasUrlResult = { "tweaked $it" },
-            ),
-            // Tessera: deactivation with a password is switched off by TesseraFeatures, so it is switched on here.
-            featureFlagService = FakeFeatureFlagService(
-                initialState = mapOf(TesseraFeatures.PasswordDeactivation.key to true)
             ),
         ).test {
             val initialState = awaitItem()
@@ -133,33 +129,24 @@ class PreferencesAccountPresenterTest {
     }
 
     @Test
-    fun `present - password deactivation is removed by default even if the Matrix client allows it`() = runTest {
-        createPreferencesAccountPresenter(
-            matrixClient = FakeMatrixClient(
-                canDeactivateAccountResult = { true },
-                accountManagementUrlResult = { Result.success("a url") },
-            ),
-            sessionEnterpriseService = FakeSessionEnterpriseService(
-                tweakMasUrlResult = { it },
-            ),
-        ).test {
-            val loadedState = consumeItemsUntilPredicate { it.accountManagementUrl != null }.last()
-            assertThat(loadedState.canDeactivateAccount).isFalse()
-            cancelAndIgnoreRemainingEvents()
+    fun `present - delete account is shown whatever the Matrix client says about the password deactivation`() = runTest {
+        // Tessera: the item opens the page of the site (ADR-0011), so it does not depend on the Matrix client.
+        listOf(true, false).forEach { clientCanDeactivate ->
+            createPreferencesAccountPresenter(
+                matrixClient = FakeMatrixClient(
+                    canDeactivateAccountResult = { clientCanDeactivate },
+                    accountManagementUrlResult = { Result.success(null) },
+                ),
+            ).test {
+                assertThat(awaitItem().canDeactivateAccount).isTrue()
+                cancelAndIgnoreRemainingEvents()
+            }
         }
     }
 
     @Test
-    fun `present - can deactivate account is false if the Matrix client say so`() = runTest {
-        createPreferencesAccountPresenter(
-            matrixClient = FakeMatrixClient(
-                canDeactivateAccountResult = { false },
-                accountManagementUrlResult = { Result.success(null) },
-            ),
-        ).test {
-            assertThat(awaitItem().canDeactivateAccount).isFalse()
-            cancelAndIgnoreRemainingEvents()
-        }
+    fun `present - delete account page is the site one`() {
+        assertThat(BuildConfig.URL_DELETE_ACCOUNT).isEqualTo("https://tessera-messenger.ru/delete-account")
     }
 
     @Test
