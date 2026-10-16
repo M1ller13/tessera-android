@@ -49,6 +49,9 @@ dependencies {
     allFeaturesImpl(project)
     implementation(projects.appicon.element)
     implementation(projects.appicon.enterprise)
+    // Tessera: icon resources and the palette for TesseraScreenshotTest.
+    implementation(projects.appicon.tessera)
+    testImplementation(projects.tessera.enterprise)
 
     testImplementation(libs.test.junit)
     testImplementation(libs.test.parameter.injector)
