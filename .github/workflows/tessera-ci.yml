@@ -111,7 +111,7 @@ jobs:
         run: ./gradlew :app:testGplayDebugUnitTest testDebugUnitTest -x :tests:konsist:testDebugUnitTest --continue $CI_GRADLE_ARG_PROPERTIES
       - name: Konsist
         if: ${{ !cancelled() }}
-        run:./gradlew :tests:konsist:testDebugUnitTest $CI_GRADLE_ARG_PROPERTIES
+        run: ./gradlew :tests:konsist:testDebugUnitTest $CI_GRADLE_ARG_PROPERTIES
 
   screenshots:
     name: Tessera screenshots (Paparazzi)
